@@ -1,6 +1,8 @@
 import { openai } from "@ai-sdk/openai";
 import { experimental_generateImage, Message, streamText, tool } from "ai";
 import { z } from "zod";
+import { generateImage } from "./dalle";
+import { USE_VERCEL_DALLE } from "@/env";
 
 export async function POST(request: Request) {
   const { messages }: { messages: Message[] } = await request.json();
@@ -27,12 +29,17 @@ export async function POST(request: Request) {
           prompt: z.string().describe("Make your images black and white"),
         }),
         execute: async ({ prompt }) => {
-          const { image } = await experimental_generateImage({
-            model: openai.image("dall-e-3"),
-            prompt,
-          });
-          // in production, save this image to blob storage and return a URL
-          return { image: image.base64, prompt };
+          if (USE_VERCEL_DALLE) {
+            const { image } = await experimental_generateImage({
+              model: openai.image("dall-e-3"),
+              prompt,
+            });
+
+            return { image: image.base64, prompt, url: image.base64 };
+          }
+
+          const url = await generateImage({ prompt });
+          return { url, prompt };
         },
       }),
     },
