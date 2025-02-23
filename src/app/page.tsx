@@ -2,9 +2,10 @@
 
 import { useChat } from "@ai-sdk/react";
 import { SendHorizonalIcon } from "lucide-react";
-import { FormEvent, useState, useEffect, useRef } from "react";
+import { FormEvent, useRef } from "react";
 import Image from "next/image";
 import "./styles/chatAnimations.css";
+import { USE_VERCEL_DALLE } from "@/env";
 
 export default function Chat() {
   const { messages, input, setInput, handleInputChange, handleSubmit } =
@@ -53,7 +54,11 @@ export default function Chat() {
                     ti.state === "result" ? (
                       <div key={ti.toolCallId}>
                         <Image
-                          src={`data:image/png;base64,${ti.result.image}`}
+                          src={
+                            USE_VERCEL_DALLE
+                              ? `data:image/png;base64,${ti.result.image}`
+                              : ti.result.url
+                          }
                           alt={ti.result.prompt}
                           width={400}
                           height={400}
