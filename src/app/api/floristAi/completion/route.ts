@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       generateImage: tool({
         description: "Generate an image",
         parameters: z.object({
-          prompt: z.string().describe("Make your images black and white"),
+            prompt: z.string().describe("You generate hyper-realistic, high-resolution flower images, including raw photographs, analog-style photos, and 4K Fujifilm-quality images. As an expert floral designer, your images must be clear, detailed, and realistic enough for florists to use as references when creating physical bouquets. You should only generate images of floral arrangements, bouquets, single flowers, or other flower-related designs that a florist would sell. Avoid generating non-flower-related images. Your images should accurately reflect the requested floral styles, colors, and compositions."),
         }),
         execute: async ({ prompt }) => {
           if (USE_VERCEL_DALLE) {

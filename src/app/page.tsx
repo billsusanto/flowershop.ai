@@ -25,6 +25,30 @@ export default function Chat() {
     setInput("");
   };
 
+  const handlePurchase = async (imageUrl: string, prompt: string) => {
+    try {
+      const response = await fetch('/api/orders/purchase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageUrl, prompt }),
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || `Failed to create order: ${response.status} ${response.statusText}`);
+      }
+
+      // Show success message
+      alert('Thank you! Your order was created successfully. A florist will get back to you in a few business days.');
+      return data;
+    } catch (error) {
+      console.error('Error creating order:', error);
+      // Show error message to user
+      alert(`Failed to create order: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
   return (
     <div className="flex flex-col mt-14 items-center w-[100%] h-[80vh]">
       <div className="flex justify-center items-center text-center text-4xl text-black">
@@ -65,6 +89,19 @@ export default function Chat() {
                           className="max-w-[512px] rounded-lg mb-2"
                         />
                         <p>{stripFormatting(ti.result.prompt)}</p>
+                        <div className="flex gap-2 mt-2">
+                          <button
+                            onClick={() => handlePurchase(ti.result.url, ti.result.prompt)}
+                            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                          >
+                            Accept
+                          </button>
+                          <button
+                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                          >
+                            Decline
+                          </button>
+                        </div>
                       </div>
                     ) : (
                       <div key={ti.toolCallId} className="animate-pulse">
