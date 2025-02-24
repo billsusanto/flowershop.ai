@@ -2,7 +2,6 @@ import { db } from "@/db";
 import { pendingOrdersTable, usersTable } from "@/db/schema";
 import { NextResponse } from "next/server";
 import { desc } from "drizzle-orm";
-import { eq } from "drizzle-orm";
 
 export async function POST(request: Request) {
   try {
